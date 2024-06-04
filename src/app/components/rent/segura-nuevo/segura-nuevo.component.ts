@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RentService } from '../../../services/rent.service';
-import { MatSnackBar  } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-segura-nuevo',
@@ -23,7 +23,11 @@ export class SeguraNuevoComponent {
       clientName: this.fb.control('', Validators.required),
       rentDays: this.fb.control('', [Validators.required, Validators.min(1)]),
       rentDate: this.fb.control('', Validators.required),
-      pricePerDay: this.fb.control('', [Validators.required, Validators.min(1)]),
+      rentEndDate: this.fb.control('', Validators.required),
+      pricePerDay: this.fb.control('', [
+        Validators.required,
+        Validators.min(1),
+      ]),
       plate: this.fb.control('', Validators.required),
       brand: this.fb.control('', Validators.required),
       insurance: this.fb.control(false, Validators.required),
@@ -31,21 +35,35 @@ export class SeguraNuevoComponent {
   }
 
   onSubmit() {
+    const starDate = this.rentForm.get('rentDate')?.value;
+    const endDate = this.rentForm.get('rentEndDate')?.value;
+
     if (this.rentForm.invalid) {
       this.rentForm.markAllAsTouched();
+      if(starDate >= endDate){
+        console.log("invalid");
+        this.rentForm.get('rentDate')?.setErrors({ invaliddate: true });
+        this.rentForm.get('rentEndDate')?.setErrors({ invaliddate: true });
+      }
       this.snackBar.open('Campos inválidos', 'Cerrar');
     } else {
-      this.rentService.create(this.rentForm.value).subscribe({
-        next: () => {
-          this.rentService.list().subscribe({
-            next: (rents) => {
-              this.rentService.setList(rents);
-            },
-          });
-        },
-      });
-      this.snackBar.open('Registrado exitosamente!', 'Cerrar');
-      this.router.navigate(['segura/listar']);
+      if (starDate < endDate) {
+        this.rentService.create(this.rentForm.value).subscribe({
+          next: () => {
+            this.rentService.list().subscribe({
+              next: (rents) => {
+                this.rentService.setList(rents);
+              },
+            });
+          },
+        });
+        this.snackBar.open('Registrado exitosamente!', 'Cerrar');
+        this.router.navigate(['segura/listar']);
+      }else{
+        this.rentForm.get('rentDate')?.setErrors({ invaliddate: true });
+        this.rentForm.get('rentEndDate')?.setErrors({ invaliddate: true });
+        this.snackBar.open('Campos inválidos', 'Cerrar');
+      }
     }
   }
 
