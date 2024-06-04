@@ -1,0 +1,56 @@
+<h2>Formulario de Rentas</h2>
+
+<div class="form-container">
+  <form [formGroup]="rentForm">
+    <mat-form-field>
+      <mat-label>Client name</mat-label>
+      <input matInput formControlName="clientName" />
+      <mat-error>Este campo es requerido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Rent days</mat-label>
+      <input matInput type="number" formControlName="rentDays" min="1"/>
+      <mat-error>Este campo es requerido, debe ser mayor a cero</mat-error>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Rent date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="rentDate" [min]="currentDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error>Fecha inválida</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Price per day</mat-label>
+      <input matInput type="number" formControlName="pricePerDay" />
+      <mat-error>Este campo es requerido, debe ser mayor a cero</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Plate</mat-label>
+      <input matInput formControlName="plate" />
+      <mat-error>Este campo es requerido</mat-error>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Brand</mat-label>
+      <mat-select formControlName="brand">
+        <mat-option value="Toyota">Toyota</mat-option>
+        <mat-option value="Nissan">Nissan</mat-option>
+        <mat-option value="Ford">Ford</mat-option>
+      </mat-select>
+      <mat-error>Este campo es requerido</mat-error>
+    </mat-form-field>
+
+    <mat-radio-group formControlName="insurance">
+      <mat-radio-button [value]="true">Insurance</mat-radio-button>
+    </mat-radio-group>
+    
+    <div class="form-buttons">
+      <button mat-stroked-button color="primary" type="button" (click)="onCancel()">Cancelar</button>
+      <button mat-flat-button color="primary" id="btn-submit" type="submit" (click)="onSubmit()">Aceptar</button>
+    </div>
+  </form>
+</div>

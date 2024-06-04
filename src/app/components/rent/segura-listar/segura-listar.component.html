@@ -1,0 +1,83 @@
+<h2>Rentas registradas</h2>
+
+<div class="input-search-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar</mat-label>
+    <input matInput (keyup)="filtrar($event)" type="text" />
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z4" matSort>
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="clientName">
+    <th mat-header-cell *matHeaderCellDef>Client Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.clientName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="rentDays">
+    <th mat-header-cell *matHeaderCellDef>Rent Days</th>
+    <td mat-cell *matCellDef="let element">{{ element.rentDays }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="rentDate">
+    <th mat-header-cell *matHeaderCellDef>Rent Date</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.rentDate | date : "shortDate" }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="pricePerDay">
+    <th mat-header-cell *matHeaderCellDef>Price per Day</th>
+    <td mat-cell *matCellDef="let element">S/. {{ element.pricePerDay | number : "1.2-2"}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="plate">
+    <th mat-header-cell *matHeaderCellDef>Plate</th>
+    <td mat-cell *matCellDef="let element">{{ element.plate }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="brand">
+    <th mat-header-cell *matHeaderCellDef>Brand</th>
+    <td mat-cell *matCellDef="let element">{{ element.brand }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="insurance">
+    <th mat-header-cell *matHeaderCellDef>Insurance</th>
+    <td mat-cell *matCellDef="let element">{{ element.insurance }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="totalPrice">
+    <th mat-header-cell *matHeaderCellDef>Total Price</th>
+    <td mat-cell *matCellDef="let element">
+      S/. {{
+        (element.insurance
+          ? element.rentDays * element.pricePerDay * 1.035
+          : element.rentDays * element.pricePerDay
+        ) | number : "1.2-2"
+      }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="years">
+    <th mat-header-cell *matHeaderCellDef>Years</th>
+    <td mat-cell *matCellDef="let element">{{ getCarYears(element.rentDate) }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="rentDateEnd">
+    <th mat-header-cell *matHeaderCellDef>Rent Date End</th>
+    <td mat-cell *matCellDef="let element">{{ getRentEndDate(element.rentDate, element.rentDays) | date : "shortDate"}}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+<mat-paginator
+  class="mat-elevation-z4"
+  [pageSizeOptions]="[6, 8, 10]"
+  aria-label="Select page"
+>
+</mat-paginator>
